@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- default -->
+    <item android:state_pressed="false" android:state_focused="false">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:drawable="@drawable/circle_shadow" android:top="8px" android:left="6px" android:right="6px"/>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@android:color/white"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- button pressed -->
+    <item android:state_pressed="true" android:state_focused="false">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:drawable="@drawable/circle_shadow" android:top="8px" android:left="6px" android:right="6px"/>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#EEEEEE"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

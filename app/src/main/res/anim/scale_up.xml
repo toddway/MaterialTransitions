@@ -1,0 +1,9 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale android:toXScale="100%p"
+        android:fromXScale="90%p"
+        android:toYScale="100%p"
+        android:fromYScale="90%p"
+        android:pivotX="50%p"
+        android:pivotY="50%p"
+        android:duration="@android:integer/config_shortAnimTime" />
+</set>

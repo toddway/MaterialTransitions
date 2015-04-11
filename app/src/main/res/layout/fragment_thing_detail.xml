@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    >
+
+    <com.toddway.sandbox.OverScrollView
+        android:id="@+id/overscroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        >
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/detail_layout"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"
+            card_view:cardElevation="2dp"
+            card_view:cardCornerRadius="0dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="24dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Item"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    />
+                </RelativeLayout>
+            <TextView
+                android:id="@+id/detail_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:paddingTop="8dp"
+                android:text="I sincerely miss those heavy metal bands
+I used to go see on the landing in the summer
+She fell in love with the drummer
+She fell in love with the drummer
+She fell in love
+\n\n
+Shiny, shiny pants and bleach-blond hair
+A double kick drum by the river in the summer
+She fell in love with the drummer
+Another and another
+She fell in love
+\n\n
+I miss the innocence I've known
+Playing KISS covers, beautiful and stoned
+
+Unlock my body and move myself to dance
+Moving warm liquid, flowing blowing glass
+Classical music blasting masks the ringing in my ears
+\n\n
+I sincerely miss those heavy metal bands
+I used to go see on the landing in the summer
+She fell in love with the drummer
+She fell in love with another
+She fell in love
+\n\n
+I miss the innocence I've known
+Playing KISS covers, beautiful and stoned
+Playing KISS covers, beautiful and stoned
+Playing KISS covers, beautiful and stoned"/>
+            </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </com.toddway.sandbox.OverScrollView>
+
+</RelativeLayout>
