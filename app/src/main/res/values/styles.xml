@@ -10,7 +10,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="actionBarStyle">@style/Toolbar</item>
-        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
@@ -42,7 +42,7 @@
 
     <style name="fullScreen">
         <item name="android:fitsSystemWindows">true</item>
-        <item name="android:background">@color/primaryColorDark</item>
+        <item name="android:background">@color/primaryColor</item>
     </style>
 
     <style name="BaseFragmentContainer">

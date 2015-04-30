@@ -9,11 +9,14 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
 import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -36,28 +39,32 @@ public class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
-
         ButterKnife.inject(this);
+        initToolbar();
+        initBaseFragment(savedInstanceState);
+        initSharedElementTransition();
+    }
 
+    private void initToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setTitle("");
+            homeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
         }
-
-        initBaseFragment(savedInstanceState);
-
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        initSharedElementTransition();
     }
 
     private void initBaseFragment(Bundle savedInstanceState) {
+        //apply background bitmap if we have one
+        if (getIntent().hasExtra("bitmap_id")) {
+            fragmentBackround.setBackground(new BitmapDrawable(getResources(), BitmapUtil.fetchBitmapFromIntent(getIntent())));
+        }
+
         Fragment fragment = null;
         if (savedInstanceState != null) {
             fragment = getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
@@ -97,6 +104,21 @@ public class BaseActivity extends ActionBarActivity {
     }
 
 
+    private MaterialMenuDrawable.IconState currentIconState;
+    public boolean animateHomeIcon(MaterialMenuDrawable.IconState iconState) {
+        if (currentIconState == iconState) return false;
+        currentIconState = iconState;
+        homeButton.animateState(currentIconState);
+        return true;
+    }
+
+    public void setHomeIcon(MaterialMenuDrawable.IconState iconState) {
+        if (currentIconState == iconState) return;
+        currentIconState = iconState;
+        homeButton.setState(currentIconState);
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -118,7 +140,6 @@ public class BaseActivity extends ActionBarActivity {
     @TargetApi(21)
     public void initSharedElementTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
             // Postpone the transition until the window's decor view has finished its layout (so shared elements don't layout in front of decor views).
             postponeEnterTransition();
             final View decor = getWindow().getDecorView();
@@ -132,27 +153,24 @@ public class BaseActivity extends ActionBarActivity {
             });
 
             //exclude our full screen container from transitions (so it doesn't flash)
-            Transition transition = getWindow().getEnterTransition();
+            Transition transition = new Fade();
             transition.excludeTarget(R.id.full_screen, true);
+            transition.setDuration(Navigator.ANIM_DURATION);
             getWindow().setEnterTransition(transition);
+            getWindow().setExitTransition(transition);
 
-            //apply background bitmap if we have one
-            if (getIntent().hasExtra("bitmap_id")) {
-                fragmentBackround.setBackground(new BitmapDrawable(getResources(), BitmapUtil.fetchBitmapFromIntent(getIntent())));
-            }
-
-
+            getWindow().getSharedElementEnterTransition().setDuration(Navigator.ANIM_DURATION);
             getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
                 @Override
                 public void onTransitionStart(Transition transition) {
                     if (fragmentBackround.getScaleX() == 1) { //forward transition
-                        fragmentBackround.animate().scaleX(.95f).scaleY(.95f).alpha(.3f).start();
-                        homeButton.setState(MaterialMenuDrawable.IconState.BURGER);
-                        homeButton.animateState(MaterialMenuDrawable.IconState.ARROW);
+                        fragmentBackround.animate().scaleX(.92f).scaleY(.92f).alpha(.6f).setDuration(Navigator.ANIM_DURATION).setInterpolator(new AccelerateInterpolator()).start();
+                        setHomeIcon(MaterialMenuDrawable.IconState.BURGER);
+                        animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
 
                     } else { //reverse transition
-                        fragmentBackround.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).start();
-                        homeButton.animateState(MaterialMenuDrawable.IconState.BURGER);
+                        fragmentBackround.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).setDuration(Navigator.ANIM_DURATION).setInterpolator(new DecelerateInterpolator()).start();
+                        animateHomeIcon(MaterialMenuDrawable.IconState.BURGER);
                     }
                 }
 
@@ -178,4 +196,5 @@ public class BaseActivity extends ActionBarActivity {
             });
         }
     }
+
 }

@@ -6,7 +6,7 @@
             <item android:drawable="@drawable/circle_shadow" android:top="8px" android:left="6px" android:right="6px"/>
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@android:color/white"/>
+                    <solid android:color="@color/primaryColor"/>
                 </shape>
             </item>
         </layer-list>
@@ -18,7 +18,7 @@
             <item android:drawable="@drawable/circle_shadow" android:top="8px" android:left="6px" android:right="6px"/>
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="#EEEEEE"/>
+                    <solid android:color="@color/primaryColorDark"/>
                 </shape>
             </item>
         </layer-list>

@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    >
 
     <com.toddway.sandbox.OverScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/overscroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
         >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <android.support.v7.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/detail_layout"
@@ -21,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?android:attr/selectableItemBackground"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
             card_view:cardElevation="2dp"
             card_view:cardCornerRadius="0dp">
         <LinearLayout
@@ -30,7 +27,7 @@
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -38,7 +35,8 @@
                     android:id="@+id/detail_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Item"
+                    android:text="Thing"
+                    android:fontFamily="sans-serif-light"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     />
                 </RelativeLayout>
@@ -48,6 +46,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:paddingTop="8dp"
+                android:fontFamily="sans-serif-light"
+                android:lineSpacingMultiplier="1.2"
                 android:text="I sincerely miss those heavy metal bands
 I used to go see on the landing in the summer
 She fell in love with the drummer
@@ -79,6 +79,5 @@ Playing KISS covers, beautiful and stoned
 Playing KISS covers, beautiful and stoned"/>
             </LinearLayout>
             </android.support.v7.widget.CardView>
+        </RelativeLayout>
         </com.toddway.sandbox.OverScrollView>
-
-</RelativeLayout>

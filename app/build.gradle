@@ -10,6 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime()}\""
     }
     buildTypes {
         release {
@@ -29,4 +30,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:5.1.2'
 
     compile 'com.balysv.materialmenu:material-menu-toolbar:1.5.1'
+}
+
+
+import java.text.SimpleDateFormat
+def buildTime() {
+    def df = new SimpleDateFormat("M/d/yy hh:mm a")
+    return df.format(new Date())
 }

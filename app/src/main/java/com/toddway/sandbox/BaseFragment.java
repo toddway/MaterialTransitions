@@ -13,5 +13,6 @@ public class BaseFragment extends Fragment {
 
     public void onBackPressed() {
         ActivityCompat.finishAfterTransition(getBaseActivity());
+        //getBaseActivity().overridePendingTransition(R.anim.scale_up, R.anim.slide_down);
     }
 }

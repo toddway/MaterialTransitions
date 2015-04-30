@@ -2,17 +2,12 @@ package com.toddway.sandbox;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ScrollView;
 
-/**
- * Created by tway on 4/10/15.
- */
 public class OverScrollView extends ScrollView {
-
 
     public OverScrollView(Context context) {
         super(context);
@@ -26,44 +21,47 @@ public class OverScrollView extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    private int mLastMotionY;
-    private int maxTranslation = 100;
+    private int lastEventY;
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        final int y = (int) ev.getY();
-        switch (ev.getAction()) {
+    public boolean onTouchEvent(MotionEvent event) {
+        final int eventY = (int) event.getY();
+        switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (Math.abs(getTranslationY()) > maxTranslation) {
-                    listener.onOverScrolled();
-                } else {
-                    animate().translationY(0).setDuration(200).setInterpolator(new DecelerateInterpolator(2)).start();
+                int yDistance = (int) getTranslationY();
+                if (yDistance != 0 && listener != null) {
+                    if (!listener.onOverScroll(yDistance, true)) { //only do this if listener returns false
+                        animate().translationY(0)
+                                .setDuration(200)
+                                .setInterpolator(new DecelerateInterpolator(6))
+                                .start();
+                    }
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
-                mLastMotionY = y;
+                lastEventY = eventY;
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (getScrollY() == 0) {
-                    applyOverscroll(ev, false);
+                    handleOverscroll(event, false);
                 } else {
                     View view = getChildAt(getChildCount() - 1);
                     if (view.getHeight() <= (getHeight() + getScrollY())) {
-                        applyOverscroll(ev, true);
+                        handleOverscroll(event, true);
                     }
                 }
                 break;
         }
 
-        if (getTranslationY() > 0 || getTranslationY() < 0) {
+        if (getTranslationY() != 0) {
             return true;
         }
-        return super.onTouchEvent(ev);
+        return super.onTouchEvent(event);
 
     }
 
     public static interface OverScrollListener {
-        public void onOverScrolled();
+        public boolean onOverScroll(int yDistance, boolean isReleased);
     }
 
     private OverScrollListener listener;
@@ -71,19 +69,15 @@ public class OverScrollView extends ScrollView {
         this.listener = listener;
     }
 
-    private void applyOverscroll(MotionEvent ev, boolean isBottom) {
+    private void handleOverscroll(MotionEvent ev, boolean isBottom) {
         int pointerCount = ev.getHistorySize();
         for (int p = 0; p < pointerCount; p++) {
             int historicalY = (int) ev.getHistoricalY(p);
-            int translation = (historicalY - mLastMotionY);
-            translation = translation / (translation > (maxTranslation*.86) ? 6 : 4);
+            int yDistance = (historicalY - lastEventY) / 6;
 
-            Log.d("stupid", "trans:" + translation);
-
-            if (Math.abs(translation) <= (maxTranslation*1.5)) {
-                if ((isBottom && translation < 0) || (!isBottom && translation > 0)) {
-                    setTranslationY(translation);
-                }
+            if ((isBottom && yDistance < 0) || (!isBottom && yDistance > 0)) {
+                setTranslationY(yDistance);
+                if (listener != null) listener.onOverScroll(yDistance, false);
             }
         }
     }

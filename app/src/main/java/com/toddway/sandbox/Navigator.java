@@ -10,15 +10,19 @@ import android.view.View;
 import android.view.Window;
 
 public class Navigator {
+
+    public static int ANIM_DURATION = 350;
+
     public static void launchDetail(BaseActivity fromActivity, View fromView, Thing item, View backgroundView) {
         ViewCompat.setTransitionName(fromView, "detail_element");
         ViewCompat.setTransitionName(fromActivity.findViewById(R.id.fab), "fab");
-        ViewCompat.setTransitionName(fromActivity.findViewById(R.id.toolbar_container), "toolbar_container");
+        //ViewCompat.setTransitionName(fromActivity.findViewById(R.id.toolbar_container), "toolbar_container");
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                         fromActivity,
                         Pair.create(fromView, "detail_element"),
                         Pair.create(fromActivity.findViewById(R.id.fab), "fab"),
+                        //Pair.create(fromActivity.findViewById(R.id.toolbar_container), "toolbar_container"),
                         Pair.create(fromActivity.findViewById(android.R.id.navigationBarBackground), Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME)
                 );
         Intent intent = new Intent(fromActivity, BaseActivity.class);
@@ -29,7 +33,7 @@ public class Navigator {
 
         ActivityCompat.startActivity(fromActivity, intent, options.toBundle());
 
-        //fromActivity.overridePendingTransition(-1, -1);
+        //fromActivity.overridePendingTransition(R.anim.slide_up, R.anim.scale_down);
     }
 
     public static void launchOverlay(BaseActivity fromActivity, View fromView, View backgroundView) {
@@ -45,6 +49,8 @@ public class Navigator {
         if (backgroundView != null) BitmapUtil.storeBitmapInIntent(BitmapUtil.createBitmap(backgroundView), intent);
 
         ActivityCompat.startActivity(fromActivity, intent, options.toBundle());
+
+        //fromActivity.overridePendingTransition(R.anim.slide_up, R.anim.scale_down);
     }
 
 }

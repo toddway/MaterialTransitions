@@ -27,14 +27,18 @@ public class ThingListFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_thing_list, container, false);
         ButterKnife.inject(this, rootView);
+        initRecyclerView();
+        return rootView;
+    }
 
+    private void initRecyclerView() {
         recyclerAdapter = new ThingRecyclerAdapter();
         recyclerAdapter.updateList(getThings());
         recyclerAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener<Thing>() {
             @Override
             public void onItemClick(View view, Thing item, boolean isLongClick) {
                 if (isLongClick) {
-                    getBaseActivity().homeButton.animateState(MaterialMenuDrawable.IconState.X);
+                    getBaseActivity().animateHomeIcon(MaterialMenuDrawable.IconState.X);
                 } else {
                     Navigator.launchDetail(getBaseActivity(), view, item, recyclerView);
                 }
@@ -50,16 +54,12 @@ public class ThingListFragment extends BaseFragment {
                 Navigator.launchOverlay(getBaseActivity(), v, getBaseActivity().findViewById(R.id.base_fragment_container));
             }
         });
-
-        return rootView;
     }
 
     @Override
     public void onBackPressed() {
         BaseActivity activity = getBaseActivity();
-        if (activity.homeButton.getState() != MaterialMenuDrawable.IconState.BURGER) {
-            activity.homeButton.animateState(MaterialMenuDrawable.IconState.BURGER);
-        } else {
+        if (!activity.animateHomeIcon(MaterialMenuDrawable.IconState.BURGER)) {
             activity.drawerLayout.openDrawer(Gravity.START);
         }
     }
