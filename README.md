@@ -1,32 +1,33 @@
 # Android Material Transitions
 
-![Activity Transitions](img/activity-transitions.gif)
+<img src="https://raw.githubusercontent.com/toddway/MaterialTransitions/master/img/activity-transitions.gif" style="width:210px;border:1px solid #eeeeee"/>
 
-This project samples some material transition animations for Android.  The approach is based on
-[shared element transitions introduced in Android 5.0](https://developer.android.com/training/material/animations.html)
-I tried to pull it off with pure fragment transitions and ran into a few stags (see below)
-so the current solution uses activity transitions.
+[This Android project](https://github.com/toddway/MaterialTransitions) samples some Material Design-ish transitions for list items and floating action buttons.  It uses the
+[the shared element concept introduced in Android 5.0](https://developer.android.com/training/material/animations.html).  I tried to pull it off with pure fragment transitions and ran into a few stags (see below)
+so my current solution uses an activity transition for each step.
 
-## Primary tricks for the Activity Transition implementation:
+[[MORE]]
 
-- Generating a background bitmap immediately before a transition to be used in the called activity
-- Suppressing the "view overlay" to keep shared elements behind the toolbar
+## Activity Transition tricks:
+
+- Generate a background bitmap immediately before the transition and pass it to the called activity
+- Suppress the view overaly (used by default for activity transitions) to keep shared elements behind the toolbar & system bars
 - Fall back to fade and scale activity transitions when < 5.0
 
-## Issues encountered in a Fragment Transition implementation:
+## Fragment Transition issues:
 
 - animating a shared element appears to only work when using .replace() - not .add()
 - Unlike Activity transitions, the view overlay is not used for fragment transitions so shared elements
-  may animate behind other views (especially when reversing a transition).  setElevation() helps some of the time.
+  might animate behind other views (especially when reversing a transition).  setElevation() helps some of the time.
 - if transitionName is set at runtime (with java - not xml) it may not survive all lifecycle events.
   E.g. when returning to a fragment from popBackStack()
-- On Activity transitions the called activity's elements are animated when the transition is played forward AND
+- On Activity transitions the second activity's elements are animated when the transition is played forward AND
 when reversed.  For Fragment transitions, the second activity's elements are animated when played forward but
 the first activity's elements are animated when reversed.
 
-## Resources
+## More Help
 - http://www.androiddesignpatterns.com/2015/01/activity-fragment-shared-element-transitions-in-depth-part3a.html
-- https://android.googlesource.com/platform/frameworks/base/+/a712e8cc2f16ac32ee5f1bbf5b962969f2f3451e/core/java/android/app/EnterTransitionCoordinator.java
+- [https://android.googlesource.com/platform/frameworks/base/...](https://android.googlesource.com/platform/frameworks/base/+/a712e8cc2f16ac32ee5f1bbf5b962969f2f3451e/core/java/android/app/EnterTransitionCoordinator.java)
 - http://stackoverflow.com/questions/28386397/shared-element-transitions-between-views-not-activities-or-fragments
 - https://github.com/saulmm/Android-Material-Examples
 - http://stackoverflow.com/questions/29145031/shared-element-transition-works-with-fragmenttransaction-replace-but-doesnt-w
