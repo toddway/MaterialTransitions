@@ -1,22 +1,16 @@
 package com.toddway.sandbox;
 
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
-import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -26,14 +20,15 @@ import com.balysv.materialmenu.MaterialMenuView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends TransitionHelper.BaseActivity {
     protected static String BASE_FRAGMENT = "base_fragment";
     public @InjectView(R.id.toolbar) Toolbar toolbar;
     public @InjectView(R.id.material_menu_button) MaterialMenuView homeButton;
     public @InjectView(R.id.toolbar_title) TextView toolbarTitle;
     public @InjectView(R.id.fab) Button fab;
-    @InjectView(R.id.drawerLayout) DrawerLayout drawerLayout;
-    @InjectView(R.id.base_fragment_background) View fragmentBackround;
+    public @InjectView(R.id.drawerLayout) DrawerLayout drawerLayout;
+    public @InjectView(R.id.base_fragment_background) View fragmentBackround;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +37,6 @@ public class BaseActivity extends ActionBarActivity {
         ButterKnife.inject(this);
         initToolbar();
         initBaseFragment(savedInstanceState);
-        initSharedElementTransition();
     }
 
     private void initToolbar() {
@@ -71,12 +65,6 @@ public class BaseActivity extends ActionBarActivity {
         }
         if (fragment == null) fragment = getBaseFragment();
         setBaseFragment(fragment);
-    }
-
-    @Override
-    public void onBackPressed() {
-        BaseFragment fragment = (BaseFragment) getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
-        fragment.onBackPressed();
     }
 
     protected int getLayoutResource() {
@@ -137,64 +125,15 @@ public class BaseActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @TargetApi(21)
-    public void initSharedElementTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Postpone the transition until the window's decor view has finished its layout (so shared elements don't layout in front of decor views).
-            postponeEnterTransition();
-            final View decor = getWindow().getDecorView();
-            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
-                    startPostponedEnterTransition();
-                    return true;
-                }
-            });
 
-            //exclude our full screen container from transitions (so it doesn't flash)
-            Transition transition = new Fade();
-            transition.excludeTarget(R.id.full_screen, true);
-            transition.setDuration(Navigator.ANIM_DURATION);
-            getWindow().setEnterTransition(transition);
-            getWindow().setExitTransition(transition);
+    @Override
+    public boolean onBeforeBack() {
+        ActivityCompat.finishAfterTransition(this);
+        return false;
+    }
 
-            getWindow().getSharedElementEnterTransition().setDuration(Navigator.ANIM_DURATION);
-            getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
-                @Override
-                public void onTransitionStart(Transition transition) {
-                    if (fragmentBackround.getScaleX() == 1) { //forward transition
-                        fragmentBackround.animate().scaleX(.92f).scaleY(.92f).alpha(.6f).setDuration(Navigator.ANIM_DURATION).setInterpolator(new AccelerateInterpolator()).start();
-                        setHomeIcon(MaterialMenuDrawable.IconState.BURGER);
-                        animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
-
-                    } else { //reverse transition
-                        fragmentBackround.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).setDuration(Navigator.ANIM_DURATION).setInterpolator(new DecelerateInterpolator()).start();
-                        animateHomeIcon(MaterialMenuDrawable.IconState.BURGER);
-                    }
-                }
-
-                @Override
-                public void onTransitionEnd(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionCancel(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionPause(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionResume(Transition transition) {
-
-                }
-            });
-        }
+    public static BaseActivity of(Activity activity) {
+        return (BaseActivity) activity;
     }
 
 }

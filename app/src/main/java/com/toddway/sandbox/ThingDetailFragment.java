@@ -1,15 +1,14 @@
 package com.toddway.sandbox;
 
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewCompat;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
@@ -17,7 +16,7 @@ import com.balysv.materialmenu.MaterialMenuDrawable;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ThingDetailFragment extends BaseFragment {
+public class ThingDetailFragment extends TransitionHelper.BaseFragment {
 
     @InjectView(R.id.detail_title) TextView titleTextView;
     @InjectView(R.id.detail_body) TextView detailBodyTextView;
@@ -34,8 +33,6 @@ public class ThingDetailFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_thing_detail, container, false);
         ButterKnife.inject(this, rootView);
-        getBaseActivity().animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
-        getBaseActivity().fab.setTranslationY(400);
         String itemText = getActivity().getIntent().getStringExtra("item_text");
         titleTextView.setText(itemText);
 
@@ -45,19 +42,18 @@ public class ThingDetailFragment extends BaseFragment {
             public boolean onOverScroll(int yDistance, boolean isReleased) {
                 if (Math.abs(yDistance) > translationThreshold) { //passed threshold
                     if (isReleased) {
-                        onBackPressed();
+                        getActivity().onBackPressed();
                         return true;
                     } else {
-                        getBaseActivity().animateHomeIcon(MaterialMenuDrawable.IconState.X);
+                        BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.X);
                     }
                 } else {
-                    getBaseActivity().animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
+                    BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
                 }
                 return false;
             }
         });
 
-        initSharedElementTransition();
         initDetailBody();
         return rootView;
     }
@@ -71,43 +67,28 @@ public class ThingDetailFragment extends BaseFragment {
         }, 500);
     }
 
-
-    @TargetApi(21)
-    private void initSharedElementTransition() {
+    @Override
+    public void onBeforeViewShows(View contentView) {
         ViewCompat.setTransitionName(scrollView, "detail_element");
-        ViewCompat.setTransitionName(getBaseActivity().findViewById(R.id.fab), "fab");
-        //ViewCompat.setTransitionName(getBaseActivity().findViewById(R.id.toolbar_container), "toolbar_container");
+        ViewCompat.setTransitionName(getActivity().findViewById(R.id.fab), "fab");
+        BaseActivity.of(getActivity()).fab.setTranslationY(400);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        TransitionHelper.excludeEnterTarget(getActivity(), R.id.toolbar_container, true);
+        TransitionHelper.excludeEnterTarget(getActivity(), R.id.full_screen, true);
+    }
 
-            getActivity().getWindow().setSharedElementsUseOverlay(false); //must be false to keep shared elements behind toolbar
-            getActivity().getWindow().getSharedElementEnterTransition().setDuration(Navigator.ANIM_DURATION);
-            getActivity().getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
-                @Override
-                public void onTransitionStart(Transition transition) {
-                    detailBodyTextView.animate().alpha(0).start();
-                }
+    @Override
+    public void onBeforeEnter(View contentView) {
+        BaseActivity.of(getActivity()).fragmentBackround.animate().scaleX(.92f).scaleY(.92f).alpha(.6f).setDuration(Navigator.ANIM_DURATION).setInterpolator(new AccelerateInterpolator()).start();
+        BaseActivity.of(getActivity()).setHomeIcon(MaterialMenuDrawable.IconState.BURGER);
+        BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
+    }
 
-                @Override
-                public void onTransitionEnd(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionCancel(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionPause(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionResume(Transition transition) {
-
-                }
-            });
-        }
+    @Override
+    public boolean onBeforeBack() {
+        BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.BURGER);
+        BaseActivity.of(getActivity()).fragmentBackround.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).setDuration(Navigator.ANIM_DURATION/4).setInterpolator(new DecelerateInterpolator()).start();
+        TransitionHelper.fadeThenFinish(detailBodyTextView, getActivity());
+        return false;
     }
 }

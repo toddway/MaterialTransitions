@@ -16,7 +16,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ThingListFragment extends BaseFragment {
+public class ThingListFragment extends TransitionHelper.BaseFragment {
     @InjectView(R.id.recycler)
     RecyclerView recyclerView;
     ThingRecyclerAdapter recyclerAdapter;
@@ -38,9 +38,9 @@ public class ThingListFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, Thing item, boolean isLongClick) {
                 if (isLongClick) {
-                    getBaseActivity().animateHomeIcon(MaterialMenuDrawable.IconState.X);
+                    BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.X);
                 } else {
-                    Navigator.launchDetail(getBaseActivity(), view, item, recyclerView);
+                    Navigator.launchDetail(BaseActivity.of(getActivity()), view, item, recyclerView);
                 }
             }
         });
@@ -48,20 +48,21 @@ public class ThingListFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
 
-        getBaseActivity().fab.setOnClickListener(new View.OnClickListener() {
+        BaseActivity.of(getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.launchOverlay(getBaseActivity(), v, getBaseActivity().findViewById(R.id.base_fragment_container));
+                Navigator.launchOverlay(BaseActivity.of(getActivity()), v, getActivity().findViewById(R.id.base_fragment_container));
             }
         });
     }
 
     @Override
-    public void onBackPressed() {
-        BaseActivity activity = getBaseActivity();
+    public boolean onBeforeBack() {
+        BaseActivity activity = BaseActivity.of(getActivity());
         if (!activity.animateHomeIcon(MaterialMenuDrawable.IconState.BURGER)) {
             activity.drawerLayout.openDrawer(Gravity.START);
         }
+        return super.onBeforeBack();
     }
 
     public static List<Thing> getThings() {
