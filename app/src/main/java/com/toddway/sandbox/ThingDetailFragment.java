@@ -31,7 +31,7 @@ public class ThingDetailFragment extends TransitionHelper.BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_thing_detail, container, false);
+        View rootView = inflater.inflate(R.layout.thing_detail_layout, container, false);
         ButterKnife.inject(this, rootView);
         String itemText = getActivity().getIntent().getStringExtra("item_text");
         titleTextView.setText(itemText);
@@ -74,12 +74,12 @@ public class ThingDetailFragment extends TransitionHelper.BaseFragment {
         BaseActivity.of(getActivity()).fab.setTranslationY(400);
 
         TransitionHelper.excludeEnterTarget(getActivity(), R.id.toolbar_container, true);
-        TransitionHelper.excludeEnterTarget(getActivity(), R.id.full_screen, true);
+        TransitionHelper.excludeEnterTarget(getActivity(), R.id.screen_container, true);
     }
 
     @Override
     public void onBeforeEnter(View contentView) {
-        BaseActivity.of(getActivity()).fragmentBackround.animate().scaleX(.92f).scaleY(.92f).alpha(.6f).setDuration(Navigator.ANIM_DURATION).setInterpolator(new AccelerateInterpolator()).start();
+        BaseActivity.of(getActivity()).mainViewBackground.animate().scaleX(.92f).scaleY(.92f).alpha(.6f).setDuration(Navigator.ANIM_DURATION).setInterpolator(new AccelerateInterpolator()).start();
         BaseActivity.of(getActivity()).setHomeIcon(MaterialMenuDrawable.IconState.BURGER);
         BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.ARROW);
     }
@@ -87,7 +87,7 @@ public class ThingDetailFragment extends TransitionHelper.BaseFragment {
     @Override
     public boolean onBeforeBack() {
         BaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.BURGER);
-        BaseActivity.of(getActivity()).fragmentBackround.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).setDuration(Navigator.ANIM_DURATION/4).setInterpolator(new DecelerateInterpolator()).start();
+        BaseActivity.of(getActivity()).mainViewBackground.animate().scaleX(1).scaleY(1).alpha(1).translationY(0).setDuration(Navigator.ANIM_DURATION/4).setInterpolator(new DecelerateInterpolator()).start();
         TransitionHelper.fadeThenFinish(detailBodyTextView, getActivity());
         return false;
     }

@@ -1,8 +1,6 @@
 package com.toddway.sandbox;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -11,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,13 +20,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class BaseActivity extends TransitionHelper.BaseActivity {
-    protected static String BASE_FRAGMENT = "base_fragment";
     public @InjectView(R.id.toolbar) Toolbar toolbar;
     public @InjectView(R.id.material_menu_button) MaterialMenuView homeButton;
     public @InjectView(R.id.toolbar_title) TextView toolbarTitle;
     public @InjectView(R.id.fab) Button fab;
-    public @InjectView(R.id.drawerLayout) DrawerLayout drawerLayout;
-    public @InjectView(R.id.base_fragment_background) View fragmentBackround;
+    public @InjectView(R.id.root_container) DrawerLayout rootContainer;
+    public @InjectView(R.id.main_view_background) View mainViewBackground;
+
 
 
     @Override
@@ -36,7 +35,8 @@ public class BaseActivity extends TransitionHelper.BaseActivity {
         setContentView(getLayoutResource());
         ButterKnife.inject(this);
         initToolbar();
-        initBaseFragment(savedInstanceState);
+        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
+        initMainView(bundle);
     }
 
     private void initToolbar() {
@@ -53,44 +53,18 @@ public class BaseActivity extends TransitionHelper.BaseActivity {
         }
     }
 
-    private void initBaseFragment(Bundle savedInstanceState) {
-        //apply background bitmap if we have one
-        if (getIntent().hasExtra("bitmap_id")) {
-            fragmentBackround.setBackground(new BitmapDrawable(getResources(), BitmapUtil.fetchBitmapFromIntent(getIntent())));
+    private void initMainView(Bundle bundle) {
+        if (bundle.containsKey("bitmap_id")) {
+            mainViewBackground.setBackground(new BitmapDrawable(getResources(), BitmapUtil.fetchBitmapFromIntent(getIntent()))); //TODO replace intent arg with bundle
         }
 
-        Fragment fragment = null;
-        if (savedInstanceState != null) {
-            fragment = getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
-        }
-        if (fragment == null) fragment = getBaseFragment();
-        setBaseFragment(fragment);
+        int resId = bundle.getInt("fragment_resource_id", R.layout.thing_list_layout);
+        View v = View.inflate(this, resId, (ViewGroup) findViewById(R.id.main_view));
     }
 
     protected int getLayoutResource() {
         return R.layout.activity_base;
-    };
-
-    protected Fragment getBaseFragment() {
-        int fragmentResourceId = getIntent().getIntExtra("fragment_resource_id", R.layout.fragment_thing_list);
-        switch (fragmentResourceId) {
-            case R.layout.fragment_thing_list:
-            default:
-                return new ThingListFragment();
-            case R.layout.fragment_thing_detail:
-                return ThingDetailFragment.create();
-            case R.layout.fragment_overaly:
-                return new OverlayFragment();
-        }
     }
-
-    public void setBaseFragment(Fragment fragment) {
-        if (fragment == null) return;
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.base_fragment, fragment, BASE_FRAGMENT);
-        transaction.commit();
-    }
-
 
     private MaterialMenuDrawable.IconState currentIconState;
     public boolean animateHomeIcon(MaterialMenuDrawable.IconState iconState) {

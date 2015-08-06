@@ -1,12 +1,10 @@
 package com.toddway.sandbox;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 
@@ -16,19 +14,16 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ThingListFragment extends TransitionHelper.BaseFragment {
+public class ThingListView extends RelativeLayout {
     @InjectView(R.id.recycler)
     RecyclerView recyclerView;
     ThingRecyclerAdapter recyclerAdapter;
 
-    public ThingListFragment() {}
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_thing_list, container, false);
-        ButterKnife.inject(this, rootView);
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.inject(this);
         initRecyclerView();
-        return rootView;
     }
 
     private void initRecyclerView() {
@@ -45,13 +40,13 @@ public class ThingListFragment extends TransitionHelper.BaseFragment {
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(recyclerAdapter);
 
         BaseActivity.of(getActivity()).fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.launchOverlay(BaseActivity.of(getActivity()), v, getActivity().findViewById(R.id.base_fragment_container));
+                Navigator.launchOverlay(BaseActivity.of(getActivity()), v, getActivity().findViewById(R.id.main_view_container));
             }
         });
     }
@@ -60,7 +55,7 @@ public class ThingListFragment extends TransitionHelper.BaseFragment {
     public boolean onBeforeBack() {
         BaseActivity activity = BaseActivity.of(getActivity());
         if (!activity.animateHomeIcon(MaterialMenuDrawable.IconState.BURGER)) {
-            activity.drawerLayout.openDrawer(Gravity.START);
+            activity.rootContainer.openDrawer(Gravity.START);
         }
         return super.onBeforeBack();
     }

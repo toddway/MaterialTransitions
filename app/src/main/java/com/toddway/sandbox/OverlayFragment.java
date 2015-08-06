@@ -78,7 +78,7 @@ public class OverlayFragment extends TransitionHelper.BaseFragment {
         ViewCompat.setTransitionName(getActivity().findViewById(R.id.fab), "fab");
         BaseActivity.of(getActivity()).fab.setVisibility(View.INVISIBLE);
         TransitionHelper.excludeEnterTarget(getActivity(), R.id.toolbar_container, true);
-        TransitionHelper.excludeEnterTarget(getActivity(), R.id.full_screen, true);
+        TransitionHelper.excludeEnterTarget(getActivity(), R.id.screen_container, true);
         TransitionHelper.excludeEnterTarget(getActivity(), R.id.overlay, true);
     }
 

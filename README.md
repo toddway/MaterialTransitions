@@ -11,7 +11,7 @@ so my current solution uses an activity transition for each step.
 ## Activity Transition tricks:
 
 - Generate a background bitmap immediately before the transition and pass it to the called activity
-- Suppress the view overaly (used by default for activity transitions) to keep shared elements behind the toolbar & system bars
+- Suppress the view overlay (used by default for activity transitions) to keep shared elements behind the toolbar & system bars
 - Fall back to fade and scale activity transitions when < 5.0
 
 ## Fragment Transition issues:

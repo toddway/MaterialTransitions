@@ -23,7 +23,7 @@ public class Navigator {
                 );
         Intent intent = new Intent(fromActivity, BaseActivity.class);
         intent.putExtra("item_text", item.text);
-        intent.putExtra("fragment_resource_id", R.layout.fragment_thing_detail);
+        intent.putExtra("fragment_resource_id", R.layout.thing_detail_layout);
 
         if (backgroundView != null) BitmapUtil.storeBitmapInIntent(BitmapUtil.createBitmap(backgroundView), intent);
 

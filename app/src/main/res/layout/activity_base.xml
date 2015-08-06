@@ -1,7 +1,7 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
+    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
@@ -9,7 +9,7 @@
 
     <!-- main screen container, includes toolbar -->
     <LinearLayout
-        android:id="@+id/full_screen"
+        android:id="@+id/screen_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -20,16 +20,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/base_fragment_container"
+            android:id="@+id/main_view_container"
             style="@style/BaseFragmentContainer">
 
             <View
-                android:id="@+id/base_fragment_background"
+                android:id="@+id/main_view_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
             <FrameLayout
-                android:id="@+id/base_fragment"
+                android:id="@+id/main_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 />
