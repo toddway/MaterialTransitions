@@ -1,4 +1,7 @@
+## DEPRECATED - this example is no longer maintained.  See [ListOfThings](https://github.com/toddway/ListOfThings) for a newer implementation.
+
 # Android Material Transitions
+
 
 <img src="https://raw.githubusercontent.com/toddway/MaterialTransitions/master/img/activity-transitions.gif" style="width:210px;border:1px solid #eeeeee"/>
 
