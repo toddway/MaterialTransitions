@@ -1,4 +1,4 @@
-## DEPRECATED - this example is no longer maintained.  See [ListOfThings](https://github.com/toddway/ListOfThings) for a newer implementation.
+## See [ListOfThings](https://github.com/toddway/ListOfThings) for a newer implementation.
 
 # Android Material Transitions
 
